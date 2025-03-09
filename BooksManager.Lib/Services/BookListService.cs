@@ -53,7 +53,7 @@ namespace BooksManager.Lib.Services
         public List<Book> FindBookByTag(object searchVal, BookFields? searchTag = null) {
             List<Book> found = new List<Book>();
 
-            SelectFunc selectFunc = GetSelector(searchTag);
+            SelectFunc? selectFunc = GetSelector(searchTag);
 
             int booksPerThread = 100; //*
             int taskNum = _books.Count / booksPerThread;
@@ -71,19 +71,25 @@ namespace BooksManager.Lib.Services
             return found;
         }
 
-        private void MakePartlySearch(object searchVal, SelectFunc selectValMethod, List<Book> found, int startInd, int searchBorder) {
+        private void MakePartlySearch(object searchVal, SelectFunc? selectValMethod, List<Book> found, int startInd, int searchBorder) {
             TaskQueue.TaskDelegate task;
             task = () => {
+                List<Book> localFound = new List<Book>();
                 for (int i = startInd; i < searchBorder; i++)
                 {
                     Book checkBook = _books[i];
-                    if (searchVal.Equals(selectValMethod(checkBook)))
+                    bool areMatch = selectValMethod != null ?
+                    searchVal.Equals(selectValMethod(checkBook)) :
+                    searchVal.Equals(checkBook);
+
+                    if (areMatch)
                     {
-                        lock (found)
-                        {
-                            found.Add(checkBook);
-                        }
+                        localFound.Add(checkBook);
                     }
+                }
+                lock (found)
+                {
+                    found.AddRange(localFound);
                 }
             };
             _threadPool.EnqueueTask(task);
@@ -101,9 +107,9 @@ namespace BooksManager.Lib.Services
             }
         }
 
-        private SelectFunc GetSelector(BookFields? tag) {
+        private SelectFunc? GetSelector(BookFields? tag) {
             if (tag == null) {
-                return (Book book) => (IComparable)book;
+                return null;
             }
             return tag switch
             {
