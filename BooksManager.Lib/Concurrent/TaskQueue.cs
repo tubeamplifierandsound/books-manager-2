@@ -4,19 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BooksManager.Lib.TaskQueue
+namespace BooksManager.Lib.Concurrent
 {
     internal class TaskQueue
     {//mb add start method
         public delegate void TaskDelegate();
 
+        public int ThreadNum { get;}
+
         private readonly Queue<TaskDelegate> _taskQueue = new Queue<TaskDelegate>();
         private readonly List<Thread> _threads = new List<Thread>();
         private readonly object _lockObj = new object();
         private bool _poolIsRunning = true;
+
         
         public TaskQueue(int threadNum)
         {
+            ThreadNum = threadNum;
             for (int i = 0; i < threadNum; i++) {
                 Thread newThread = new Thread(ThreadTask);
                 // if true then thread can't block process termination

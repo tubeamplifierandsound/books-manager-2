@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 using BooksManager.Lib.Models;
 using BooksManager.Lib.Storage;
 using BooksManager.Lib.Exceptions;
+using BooksManager.Lib.Concurrent;
 
 namespace BooksManager.Lib.Services
 {
     internal class BookListService
     {
-        private List<Book> books;
-
+        private List<Book> _books;
         private IBookStorage _storage;
+        private TaskQueue _threadPool;
 
         public BookListService(IBookStorage storage) { 
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
@@ -25,17 +26,26 @@ namespace BooksManager.Lib.Services
             if (book == null) { 
                 throw new ArgumentNullException(nameof(book));
             }
-            if (books.Contains(book)) {
+            if (_books.Contains(book)) {
                 throw new DuplicateBookException();
             }
-            books.Add(book);
+            _books.Add(book);
         }
 
         public void RemoveBook(Book book) {
-            if (!books.Remove(book)) {
+            if (!_books.Remove(book)) {
                 throw new NonExistentBookException();
             }
         }
+
+        public List<Book> FindBookByTag(BookFields findTag) {
+            List<Book> found = new List<Book>();
+
+           // int partSize = _books.Count / 
+
+            return found;
+        }
+
 
 
         public void SortBooksByTag(BookFields sortTag, bool ascending)
@@ -43,10 +53,10 @@ namespace BooksManager.Lib.Services
             var selector = GetSortSelector(sortTag);
             if (ascending)
             {
-                books = books.OrderBy(selector).ToList();
+                _books = _books.OrderBy(selector).ToList();
             }
             else {
-                books = books.OrderByDescending(selector).ToList();
+                _books = _books.OrderByDescending(selector).ToList();
             }
         }
 
@@ -67,11 +77,11 @@ namespace BooksManager.Lib.Services
 
 
         public void SaveList() {
-            _storage.SaveBooks(books);
+            _storage.SaveBooks(_books);
         }
 
         public void LoadList() {
-            books = _storage.LoadBooks();
+            _books = _storage.LoadBooks();
         }
 
     }
