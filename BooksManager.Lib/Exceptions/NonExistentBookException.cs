@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BooksManager.Lib.Exceptions
 {
-    internal class NonExistentBookException : Exception
+    public class NonExistentBookException : Exception
     {
         public NonExistentBookException() : base("There is no such book in the collection") { }
         public NonExistentBookException(string message) : base(message) { }

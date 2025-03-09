@@ -8,7 +8,7 @@ using BooksManager.Lib.Models;
 
 namespace BooksManager.Lib.Storage
 {
-    internal class BinaryBookListStorage : IBookStorage
+    public class BinaryBookListStorage : IBookStorage
     {
 
         private string _storagePath;

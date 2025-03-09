@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BooksManager.Lib.Exceptions
 {
-    internal class DuplicateBookException : Exception
+    public class DuplicateBookException : Exception
     {
         public DuplicateBookException() : base("Book is already exists in collection") { }
         public DuplicateBookException(string message) : base(message) { }

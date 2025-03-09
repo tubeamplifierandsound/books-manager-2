@@ -13,7 +13,7 @@ using BooksManager.Lib.Concurrent;
 namespace BooksManager.Lib.Services
 {
     using SelectFunc = Func<Book, IComparable>;
-    internal class BookListService
+    public class BookListService
     {
         private List<Book> _books;
         private IBookStorage _storage;
@@ -132,6 +132,11 @@ namespace BooksManager.Lib.Services
 
         public void LoadList() {
             _books = _storage.LoadBooks();
+        }
+
+
+        public List<Book> GetBooks() {
+            return new List<Book>(_books);
         }
 
     }
