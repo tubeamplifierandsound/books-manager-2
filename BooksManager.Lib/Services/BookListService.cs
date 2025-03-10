@@ -19,6 +19,8 @@ namespace BooksManager.Lib.Services
         private IBookStorage _storage;
         private TaskQueue _threadPool;
 
+        public IReadOnlyList<Book> Books => _books; 
+
         public BookListService(IBookStorage storage) { 
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             LoadList();
@@ -31,10 +33,12 @@ namespace BooksManager.Lib.Services
             if (book == null) { 
                 throw new ArgumentNullException(nameof(book));
             }
-            //if (_books.Contains(book)) {
+            //if (_books.Contains(book))
+            //{
             //    throw new DuplicateBookException();
             //}
-            if (FindBookByTag(book).Count != 0) {
+            if (FindBookByTag(book).Count != 0)
+            {
                 throw new DuplicateBookException();
             }
             _books.Add(book);
@@ -44,6 +48,7 @@ namespace BooksManager.Lib.Services
             //if (!_books.Remove(book)) {
             //    throw new NonExistentBookException();
             //}
+            //mb get index in FindBookByTag and delete by index
             if (FindBookByTag(book).Count == 0) {
                 throw new NonExistentBookException();
             }
@@ -51,27 +56,41 @@ namespace BooksManager.Lib.Services
         }
 
         public List<Book> FindBookByTag(object searchVal, BookFields? searchTag = null) {
+            int booksPerThread = 20_000;
+
+            //const int partsNum = 1;
+            //int booksPerThread = _books.Count / partsNum; //20000; //*
+
+            //if (booksPerThread == 0)
+            //{
+            //    booksPerThread = partsNum;
+            //}
+
             List<Book> found = new List<Book>();
 
             SelectFunc? selectFunc = GetSelector(searchTag);
 
-            int booksPerThread = 100; //*
             int taskNum = _books.Count / booksPerThread;
             int booksExcess = _books.Count % booksPerThread;
+
+            int totalTaskNum = booksExcess > 0 ? taskNum + 1 : taskNum;
+            CountdownEvent countdown = new CountdownEvent(totalTaskNum);
 
             int startInd = 0;
 
             for (int i = 0; i < taskNum; i++) {
-                MakePartlySearch(searchVal, selectFunc, found, startInd, startInd + booksPerThread);
+                MakePartlySearch(searchVal, selectFunc, found, startInd, startInd + booksPerThread, countdown);
                 startInd += booksPerThread;
             }
             if (booksExcess > 0) { 
-                MakePartlySearch(searchVal, selectFunc, found, startInd, startInd + booksExcess);
+                MakePartlySearch(searchVal, selectFunc, found, startInd, startInd + booksExcess, countdown);
             }
+            countdown.Wait();
             return found;
         }
 
-        private void MakePartlySearch(object searchVal, SelectFunc? selectValMethod, List<Book> found, int startInd, int searchBorder) {
+        private void MakePartlySearch(object searchVal, SelectFunc? selectValMethod, List<Book> found, 
+            int startInd, int searchBorder, CountdownEvent countdown) {
             TaskQueue.TaskDelegate task;
             task = () => {
                 List<Book> localFound = new List<Book>();
@@ -91,6 +110,7 @@ namespace BooksManager.Lib.Services
                 {
                     found.AddRange(localFound);
                 }
+                countdown.Signal();
             };
             _threadPool.EnqueueTask(task);
         }
@@ -135,7 +155,7 @@ namespace BooksManager.Lib.Services
         }
 
 
-        public List<Book> GetBooks() {
+        public List<Book> GetBooksCopy() {
             return new List<Book>(_books);
         }
 

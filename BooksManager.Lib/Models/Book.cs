@@ -1,6 +1,8 @@
-﻿namespace BooksManager.Lib.Models
+﻿using System.Globalization;
+
+namespace BooksManager.Lib.Models
 {
-    public class Book : IEquatable<Book>, IComparable<Book>
+    public class Book : IEquatable<Book>, IComparable<Book>, IFormattable
     {
         public string ISBN { get; set; }
         public string AuthorName { get; set; }
@@ -81,5 +83,29 @@
                 return this.ISBN.CompareTo(book.ISBN);
             }
         }
+
+        public override string ToString() {
+            return ToString("G");
+        }
+
+        public string ToString(string? format, IFormatProvider? provider = null)
+        {
+            if (String.IsNullOrEmpty(format))
+            {
+                format = "С";
+            }
+            if (provider == null) {
+                provider = CultureInfo.CurrentCulture;
+            }
+            return format.ToUpperInvariant() switch
+            {
+                "G" => $"{AuthorName}, {BookName}", // General
+                "M" => $"{AuthorName}, {BookName}, \"{Publisher}\", {PublYear}", // Medium
+                "F" => $"ISBN 13: {ISBN}, {AuthorName}, {BookName}, \"{Publisher}\", {PublYear}, P. {PagesNumber}", // Full
+                "C" => $"ISBN 13: {ISBN}, {AuthorName}, {BookName}, \"{Publisher}\", {PublYear}, P. {PagesNumber}, {Price:C}", // Complete (+ cost)
+                _ => throw new FormatException($"The {format} format string is not supported")
+            };
+        }
+
     }
 }
