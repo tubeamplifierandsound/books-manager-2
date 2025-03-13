@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BooksManager.Lib.Concurrent
 {
-    internal class TaskQueue
+    public class TaskQueue
     {//mb add start method
         public delegate void TaskDelegate();
 

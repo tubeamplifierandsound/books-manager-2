@@ -24,7 +24,9 @@ namespace BooksManager.Lib.Services
         public BookListService(IBookStorage storage) { 
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             LoadList();
-
+            if (_books == null) { 
+                _books = new List<Book>();
+            }
             int threadNum = Environment.ProcessorCount;
             _threadPool = new TaskQueue(threadNum);
         }

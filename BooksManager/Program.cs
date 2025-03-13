@@ -8,7 +8,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 class Program {
     static void Main() {
-        const string storePath = "..\\..\\..\\Storage\\HugeBookStorage";
+        const string storePath = "..\\..\\..\\Storage\\BookStorage";
         BookListService bookService;
         if (!File.Exists(storePath)) {
             Console.WriteLine($"File \"{storePath}\" doesn't exists");
