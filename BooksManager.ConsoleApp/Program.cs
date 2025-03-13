@@ -22,5 +22,4 @@ class Program {
         Demonstrator.DemonstrateWork(bookService);
 
     }
-
 }
