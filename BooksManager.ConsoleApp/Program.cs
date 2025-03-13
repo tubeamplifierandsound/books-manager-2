@@ -9,7 +9,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 class Program {
     static void Main() {
-        const string storePath = "..\\..\\..\\AppData\\Storage\\HugeBookStorage";
+        const string storePath = "..\\..\\..\\AppData\\Storage\\BookStorage";
         const string logPath = "..\\..\\..\\AppData\\Logs\\log.txt";
         ILogger _logger = new SerilogAdapter(logPath);
         BookListService bookService;

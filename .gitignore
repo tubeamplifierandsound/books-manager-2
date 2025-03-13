@@ -363,5 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # My files
-BooksManager.ConsoleApp\AppData\Storage\BigBookStorage
-BooksManager.ConsoleApp\AppData\Storage\HugeBookStorage
+BooksManager.ConsoleApp/AppData/Storage/BigBookStorage
+BooksManager.ConsoleApp/AppData/Storage/HugeBookStorage
