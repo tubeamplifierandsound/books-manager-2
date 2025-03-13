@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksManager.ConsoleApp", "BooksManager\BooksManager.ConsoleApp.csproj", "{EB8BA774-D5B3-4297-AFED-D9EBF1DFA4CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksManager.ConsoleApp", "BooksManager.ConsoleApp\BooksManager.ConsoleApp.csproj", "{EB8BA774-D5B3-4297-AFED-D9EBF1DFA4CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksManager.Lib", "BooksManager.Lib\BooksManager.Lib.csproj", "{3B69E7A2-A2F1-4B61-9E91-0BD8A6F62753}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksManager.Tests", "BooksManager.Tests\BooksManager.Tests.csproj", "{E696583D-D867-459A-AAD7-1789923D78CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksManager.LoggingServices", "BooksManager.LoggingServices\BooksManager.LoggingServices.csproj", "{9B03B5CF-C80E-4448-B290-A2AB0B01EC81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{E696583D-D867-459A-AAD7-1789923D78CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E696583D-D867-459A-AAD7-1789923D78CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E696583D-D867-459A-AAD7-1789923D78CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B03B5CF-C80E-4448-B290-A2AB0B01EC81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B03B5CF-C80E-4448-B290-A2AB0B01EC81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B03B5CF-C80E-4448-B290-A2AB0B01EC81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B03B5CF-C80E-4448-B290-A2AB0B01EC81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

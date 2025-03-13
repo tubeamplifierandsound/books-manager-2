@@ -8,6 +8,9 @@ using BooksManager.Lib.Models;
 using BooksManager.Lib.Storage;
 using BooksManager.Lib.Exceptions;
 using BooksManager.Lib.Concurrent;
+using BooksManager.LoggingServices;
+using Serilog.Core;
+using System.Diagnostics;
 
 
 namespace BooksManager.Lib.Services
@@ -17,12 +20,15 @@ namespace BooksManager.Lib.Services
     {
         private List<Book> _books;
         private IBookStorage _storage;
+        private ILogger _logger;
         private TaskQueue _threadPool;
 
         public IReadOnlyList<Book> Books => _books; 
 
-        public BookListService(IBookStorage storage) { 
+
+        public BookListService(IBookStorage storage, ILogger logger) { 
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            _logger = logger;
             LoadList();
             if (_books == null) { 
                 _books = new List<Book>();
@@ -32,7 +38,9 @@ namespace BooksManager.Lib.Services
         }
 
         public void AddBook(Book book) {
-            if (book == null) { 
+            _logger.LogInfo($"Добавление книги ISBN: {book.ISBN}");
+            if (book == null) {
+                _logger.LogInfo($"Ошибка: передана пустая книга");
                 throw new ArgumentNullException(nameof(book));
             }
             //if (_books.Contains(book))
@@ -41,9 +49,11 @@ namespace BooksManager.Lib.Services
             //}
             if (FindBookByTag(book).Count != 0)
             {
+                _logger.LogWarning($"Книга с ISBN: {book.ISBN} уже существует");
                 throw new DuplicateBookException();
             }
             _books.Add(book);
+            _logger.LogInfo($"Книга с ISBN: {book.ISBN} успешно добавлена.");
         }
 
         public void RemoveBook(Book book) {
@@ -58,6 +68,9 @@ namespace BooksManager.Lib.Services
         }
 
         public List<Book> FindBookByTag(object searchVal, BookFields? searchTag = null) {
+            _logger.LogInfo($"Start search");
+            Stopwatch sw = Stopwatch.StartNew();
+            sw.Start(); 
             int booksPerThread = 20_000;
 
             //const int partsNum = 1;
@@ -88,6 +101,8 @@ namespace BooksManager.Lib.Services
                 MakePartlySearch(searchVal, selectFunc, found, startInd, startInd + booksExcess, countdown);
             }
             countdown.Wait();
+            _logger.LogInfo($"Search time: {sw.ElapsedMilliseconds} ms");
+            sw.Stop();
             return found;
         }
 

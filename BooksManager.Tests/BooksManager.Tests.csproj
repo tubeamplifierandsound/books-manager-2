@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BooksManager.Lib\BooksManager.Lib.csproj" />
+    <ProjectReference Include="..\BooksManager.LoggingServices\BooksManager.LoggingServices.csproj" />
   </ItemGroup>
 
 </Project>

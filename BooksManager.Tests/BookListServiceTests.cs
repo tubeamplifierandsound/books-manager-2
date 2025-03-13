@@ -2,6 +2,7 @@
 using BooksManager.Lib.Models;
 using BooksManager.Lib.Storage;
 
+using BooksManager.LoggingServices;
 using BooksManager.Lib.Exceptions;
 
 using Moq;
@@ -16,7 +17,8 @@ namespace BooksManager.Tests
         {
             // Arrange
             var mockStorage = new Mock<IBookStorage>();
-            var bookService = new BookListService(mockStorage.Object);
+            var mockLogger = new Mock<ILogger>();
+            var bookService = new BookListService(mockStorage.Object, mockLogger.Object);
             Book book = new Book("000-0-00-000000-0", "Author_0", 
                 "Book_0", "Publisher_0", 0, 0, 0);
             // Act
@@ -29,7 +31,8 @@ namespace BooksManager.Tests
         public void AddBook_WhenBookIsNotUnique_ShouldThrowDuplicateBookException() {
             // Arrange
             var mockStorage = new Mock<IBookStorage>();
-            var bookService = new BookListService(mockStorage.Object);
+            var mockLogger = new Mock<ILogger>();
+            var bookService = new BookListService(mockStorage.Object, mockLogger.Object);
             Book book = new Book("000-0-00-000000-0", "Author_0",
                 "Book_0", "Publisher_0", 0, 0, 0);
             bookService.AddBook(book);
@@ -42,7 +45,8 @@ namespace BooksManager.Tests
         public void RemoveBook_WhenBookIsContained_ShouldRemoveBook() {
             // Average
             var mockStorage = new Mock<IBookStorage>();
-            var bookService = new BookListService(mockStorage.Object);
+            var mockLogger = new Mock<ILogger>();
+            var bookService = new BookListService(mockStorage.Object, mockLogger.Object);
             Book book = new Book("000-0-00-000000-0", "Author_0",
                 "Book_0", "Publisher_0", 0, 0, 0);
             bookService.AddBook(book);
@@ -58,7 +62,8 @@ namespace BooksManager.Tests
         public void RemoveBook_WhenBookIsNotContained_ShouldTrowNonExistentBookException() {
             // Arrange
             var mockStorage = new Mock<IBookStorage>();
-            var bookService = new BookListService(mockStorage.Object);
+            var mockLogger = new Mock<ILogger>();
+            var bookService = new BookListService(mockStorage.Object, mockLogger.Object);
             Book book = new Book("000-0-00-000000-0", "Author_0",
                 "Book_0", "Publisher_0", 0, 0, 0);
             // Act and assert
@@ -69,7 +74,8 @@ namespace BooksManager.Tests
         public void SortBooksByTag_ASCByISBN_ShouldSortBooks() {
             // Average
             var mockStorage = new Mock<IBookStorage>();
-            var bookService = new BookListService(mockStorage.Object);
+            var mockLogger = new Mock<ILogger>();
+            var bookService = new BookListService(mockStorage.Object, mockLogger.Object);
             Book book1 = new Book("000-0-00-000000-1", "Author_0",
                 "Book_1", "Publisher_0", 0, 0, 0);
             Book book2 = new Book("000-0-00-000000-2", "Author_0",
@@ -91,7 +97,8 @@ namespace BooksManager.Tests
         public void FindBookByTag_ByBookName_ShouldFindAllBooks() {
             const string findName = "Book_1";
             var mockStorage = new Mock<IBookStorage>();
-            var bookService = new BookListService(mockStorage.Object);
+            var mockLogger = new Mock<ILogger>();
+            var bookService = new BookListService(mockStorage.Object, mockLogger.Object);
             Book book1 = new Book("000-0-00-000000-1", "Author_0",
                findName, "Publisher_0", 0, 0, 0);
             Book book1_2 = new Book("000-0-00-000000-2", "Author_0",
